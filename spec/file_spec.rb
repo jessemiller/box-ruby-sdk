@@ -1,3 +1,5 @@
+#encoding: UTF-8
+
 require 'helper/account'
 
 require 'box/api'
@@ -27,7 +29,7 @@ describe Box::File do
     after(:each) do
       File.delete(@hello_file)
       File.delete(@vegetables)
-
+      
       @test_root.delete
     end
 
@@ -50,6 +52,13 @@ describe Box::File do
       @test_root.files.should have(1).thing
       @test_root.upload(@hello_file)
       @test_root.files.should have(1).thing
+    end
+    
+    it "should handle UTF-8 filenames" do
+      utf8_file_name = 'кузнецкий_105_а_№2.test'
+      File.open(utf8_file_name, 'w') { |f| f.write("Hello World!") }
+      utf8_file = @test_root.upload(utf8_file_name)
+      File.delete(utf8_file_name)
     end
 
     it "uploads a copy" do
